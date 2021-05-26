@@ -31,13 +31,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.all(15),
                       child: Image(
                           image: AssetImage(
-                              'images/dice-png-$leftDiceNumber.png')))),
+                              'assets/images/dice-png-$leftDiceNumber.png')))),
               Expanded(
                   child: Padding(
                       padding: EdgeInsets.all(15),
                       child: Image(
                           image: AssetImage(
-                              'images/dice-png-$rightDiceNumber.png'))))
+                              'assets/images/dice-png-$rightDiceNumber.png'))))
             ],
           ),
           ElevatedButton(
