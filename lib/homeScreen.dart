@@ -8,14 +8,44 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   int leftDiceNumber = 1;
   int rightDiceNumber = 1;
+  AnimationController _controller;
+  CurvedAnimation animation;
   void roll() {
-    setState(() {
-      leftDiceNumber = Random().nextInt(6) + 1;
-      rightDiceNumber = Random().nextInt(6) + 1;
+    _controller.forward();
+  }
+
+  void animate() {
+    _controller =
+        AnimationController(duration: Duration(seconds: 1), vsync: this);
+        animation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+    animation.addListener(() {
+      setState((){});
     });
+    animation.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          leftDiceNumber = Random().nextInt(6) + 1;
+          rightDiceNumber = Random().nextInt(6) + 1;
+        });
+        _controller.reverse();
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    animate();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
   }
 
   @override
@@ -27,17 +57,29 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             children: <Widget>[
               Expanded(
-                  child: Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Image(
-                          image: AssetImage(
-                              'assets/images/dice-png-$leftDiceNumber.png')))),
+                  child: GestureDetector(
+                onDoubleTap: () {
+                  roll();
+                },
+                child: Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Image(
+                        height: 200 - (animation.value) * 200,
+                        image: AssetImage(
+                            'assets/images/dice-png-$leftDiceNumber.png'))),
+              )),
               Expanded(
-                  child: Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Image(
-                          image: AssetImage(
-                              'assets/images/dice-png-$rightDiceNumber.png'))))
+                  child: GestureDetector(
+                onDoubleTap: () {
+                  roll();
+                },
+                child: Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Image(
+                        height: 200 - (animation.value) * 200,
+                        image: AssetImage(
+                            'assets/images/dice-png-$rightDiceNumber.png'))),
+              ))
             ],
           ),
           ElevatedButton(
